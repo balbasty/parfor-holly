@@ -38,16 +38,16 @@ close all; clear; clc;
 
 %--------------------------------------------------------------------------
 % Path to required directories
-dir_root_h   = '/scratch/mbrud/parfor-holly';           % The folder on holly where logs, scripts and data will be stored
-dir_root_l   = '/data-scratch/mbrud/parfor-holly';      % The location on the local machine to which dir_root_h is mapped (OBS: could have the same name as dir_root_h)
-dir_matlab_h = '/share/apps/MATLAB/R2016a/bin/matlab';  % The path to MATLAB on holly
-dir_pwd_h    = '/home/mbrud/cluster-code/parfor-holly'; % The location of this code on holle (remember, now you are on your local machine)
+dir_root_h   = '/pth/to/dir/on/holly';                 % The folder on holly where logs, scripts and data will be stored
+dir_root_l   = '/pth/to/above/dir/mapped/to/local';    % The location on the local machine to which dir_root_h is mapped (OBS: could have the same name as dir_root_h)
+dir_matlab_h = '/share/apps/MATLAB/R2016a/bin/matlab'; % The path to MATLAB on holly
+dir_pwd_h    = '/pth/to/this/file/on/holly';           % The location of this code on holle (remember, now you are on your local machine)
 
 %--------------------------------------------------------------------------
 % Cluster parameters
 RAM      = 2;          % RAM to allocate for each job (if this value is to small, expect hard to trace runtime errors...)
-username = 'mbrud';    % your holly username
-password = 'Misel003'; % your holly password (TODO: should probably be read from file, not harcoded...)
+username = 'username'; % your holly username
+password = 'password'; % your holly password (TODO: should probably be read from file, not harcoded...)
 t        = 10;         % Number of jobs to run on holly 
 
 %--------------------------------------------------------------------------
@@ -70,9 +70,9 @@ dir_scripts_h  = fullfile(dir_root_h,'scripts');
 %==========================================================================
 %% Create bash scripts that will run on holly (using qsub)
 
-jnam_h     = 'incr_x';   % the name of the t jobs that will run on holly
-fun        = 'foo';       % the name of a MATLAB function, that should exist in the same folder as this script (parfor_holly). For more info do 'help foo'
-jnam_dummy = 'dummy_job'; % the name of the dummy job that will run on holly
+jnam_h     = 'incr_x'; % the name of the t jobs that will run on holly
+fun        = 'foo';    % the name of a MATLAB function, that should exist in the same folder as this script (parfor_holly). For more info do 'help foo'
+jnam_dummy = 'dummy';  % the name of the dummy job that will run on holly
 
 [pth_script_parfor,pth_script_dummy] = create_bash_scripts(dir_scripts_l,dir_scripts_h,jnam_h,jnam_dummy,fun,dir_logs_h,dir_matlab_h,dir_pwd_h,t);
 
