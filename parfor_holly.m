@@ -17,11 +17,15 @@
 % saves the updated variable. When all variables have been updated, they
 % are summed and then the sum is plotted.
 %
-% Prerequisites: -A machine running a Unix based OS (e.g. CentOS, OSX,
-% Ubuntu) (TODO: should work on Windows by interfacing with, e.g., Git
-% BASH) -sshpass installed (on CentOS do 'yum install sshpass') -An account
-% on holly -A folder on the local computer (dir_root_l) that maps to a
-% folder on holly (dir_root_h)
+% Prerequisites: 
+% -A machine running a Unix based OS (e.g. CentOS, OSX, Ubuntu) (TODO: should work on Windows by interfacing with, e.g., Git BASH) 
+% -sshpass installed (on CentOS do 'yum install sshpass') 
+% -An account on holly 
+% -A folder on the local computer (dir_root_l) that maps to a folder on holly (dir_root_h)
+%
+% OBS:
+% The MATLAB function that will run on holly (in this script called foo)
+% requires a hardcoded path.
 %
 % Finally: Any feedback and/or improvements are greatly appreciated! Please
 % just do a pull request to the GitHub repo where you found this code.
@@ -70,9 +74,9 @@ dir_scripts_h  = fullfile(dir_root_h,'scripts');
 %==========================================================================
 %% Create bash scripts that will run on holly (using qsub)
 
-jnam_h     = 'incr_x'; % the name of the t jobs that will run on holly
-fun        = 'foo';    % the name of a MATLAB function, that should exist in the same folder as this script (parfor_holly). For more info do 'help foo'
-jnam_dummy = 'dummy';  % the name of the dummy job that will run on holly
+jnam_h     = 'foo_job';   % the name of the t jobs that will run on holly
+fun        = 'foo';       % the name of a MATLAB function, that should exist in the same folder as this script (parfor_holly). For more info do 'help foo'
+jnam_dummy = 'dummy_job'; % the name of the dummy job that will run on holly
 
 [pth_script_parfor,pth_script_dummy] = create_bash_scripts(dir_scripts_l,dir_scripts_h,jnam_h,jnam_dummy,fun,dir_logs_h,dir_matlab_h,dir_pwd_h,t);
 
@@ -142,6 +146,8 @@ for iter=1:10
                clear x
             end
             SX(iter) = sx;
+            
+            fprintf('sx: %d \n',sx)
             
             % Plot SX
             figure(1);
