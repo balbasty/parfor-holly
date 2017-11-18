@@ -12,7 +12,12 @@ function subject_update(t)
 %==========================================================================
 
 % Load variable using the cell array of paths pth_job_data
-load('/home/mbrud/cluster-code/parfor-holly/pth_job_data_array_h.mat','pth_job_data_h');
+pth = '';
+if isempty(pth)
+   error('Absolute path (on Holly) to pth_job_data_array_h.mat needs to be set in subject_update!') 
+end
+
+load(pth,'pth_job_data_h');
 pth = pth_job_data_h{t};
 load(pth,'-mat','x');
 
