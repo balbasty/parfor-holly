@@ -1,4 +1,4 @@
-function global_update(pth)
+function SX = global_update(pth,t,iter,SX)
 % For all job, sum over x
 sx = 0;
 for i=1:t

@@ -105,6 +105,7 @@ fprintf('==========================================\n')
 fprintf('Starting demo...\n')   
 for iter=1:10     
     fprintf('iter=%d\n',iter);         
+    pause(1); % A short pause, just to make sure i/o has finished writing to disk
     
     %----------------------------------------------------------------------
     % Submit t jobs to holly    
@@ -119,7 +120,7 @@ for iter=1:10
     
     %----------------------------------------------------------------------
     % Submit a dummy job, which waits for the t jobs to finish before starting
-    cmd             = ['sshpass -p "' password '" ssh -o StrictHostKeyChecking=no ' username '@holly "source /etc/profile;/opt/gridengine/bin/linux-x64/qsub -l vf=1G -l h_vmem=1G -hold_jid ' jnam_h ' -cwd ' pth_script_dummy '"'];
+    cmd             = ['sshpass -p "' password '" ssh -o StrictHostKeyChecking=no ' username '@holly "source /etc/profile;/opt/gridengine/bin/linux-x64/qsub -l vf=0.1G -l h_vmem=0.1G -hold_jid ' jnam_h ' -cwd ' pth_script_dummy '"'];
     [status,result] = system(cmd);
     if status
        error('status~=0 for dummy job on holly!') 
@@ -129,7 +130,7 @@ for iter=1:10
     %----------------------------------------------------------------------
     % Check if dummy job has finished
     while 1, 
-        pause(1);
+        pause(1); % A short pause, just to not constantly be sending commands over ssh
         
         cmd             = ['sshpass -p "' password '" ssh -o StrictHostKeyChecking=no ' username '@holly "source /etc/profile;/opt/gridengine/bin/linux-x64/qstat | grep ' jnam_dummy '"'];        
         [status,result] = system(cmd);   
@@ -137,7 +138,7 @@ for iter=1:10
             % holly has finished processing, let's do something with the results
             fprintf('Elapsed time (holly): %d s\n',toc)
             
-            global_update(pth_job_data_l);
+            SX = global_update(pth_job_data_l,t,iter,SX);
             
             break
         end
