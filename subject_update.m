@@ -1,4 +1,4 @@
-function foo(t)
+function subject_update(t)
 % Function that is executed by each individual worker on holly.
 %
 % The basic idea is to use the integer input (t) to load a path from a cell

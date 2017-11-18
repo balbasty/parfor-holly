@@ -74,9 +74,9 @@ dir_scripts_h  = fullfile(dir_root_h,'scripts');
 %==========================================================================
 %% Create bash scripts that will run on holly (using qsub)
 
-jnam_h     = 'foo_job';   % the name of the t jobs that will run on holly
-fun        = 'foo';       % the name of a MATLAB function, that should exist in the same folder as this script (parfor_holly). For more info do 'help foo'
-jnam_dummy = 'dummy_job'; % the name of the dummy job that will run on holly
+jnam_h     = 'foo_job';        % the name of the t jobs that will run on holly
+fun        = 'subject_update'; % the name of a MATLAB function, that should exist in the same folder as this script (parfor_holly). For more info do 'help foo'
+jnam_dummy = 'dummy_job';      % the name of the dummy job that will run on holly
 
 [pth_script_parfor,pth_script_dummy] = create_bash_scripts(dir_scripts_l,dir_scripts_h,jnam_h,jnam_dummy,fun,dir_logs_h,dir_matlab_h,dir_pwd_h,t);
 
@@ -86,12 +86,11 @@ jnam_dummy = 'dummy_job'; % the name of the dummy job that will run on holly
 pth_job_data_array = './pth_job_data_array_h.mat';
 pth_job_data_l     = cell(1,t);
 pth_job_data_h     = cell(1,t);
-for i=1:t
-    x = 0; % variable to be incremented
-    
+for i=1:t      
     pth_job_data_l{i} = fullfile(dir_job_data_l,[fun num2str(i) '_data.mat']);
     pth_job_data_h{i} = fullfile(dir_job_data_h,[fun num2str(i) '_data.mat']);   
     
+    x = 0; % variable to be incremented
     save(pth_job_data_l{i},'-mat','x')        
 end
 clear x
@@ -138,20 +137,7 @@ for iter=1:10
             % holly has finished processing, let's do something with the results
             fprintf('Elapsed time (holly): %d s\n',toc)
             
-            % For all job, sum over x
-            sx = 0;
-            for i=1:t
-               load(pth_job_data_l{i},'x')
-               sx = sx + x;               
-               clear x
-            end
-            SX(iter) = sx;
-            
-            fprintf('sx: %d \n',sx)
-            
-            % Plot SX
-            figure(1);
-            semilogy(0:numel(SX) - 1,SX,'-'); drawnow            
+            global_update(pth_job_data_l);
             
             break
         end
