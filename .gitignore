@@ -87,3 +87,6 @@
 ## Nii ignore
 *.[nN][iI][iI]
 *.ipynb_checkpoints
+
+## Other
+*.txt

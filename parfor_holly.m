@@ -41,18 +41,24 @@
 close all; clear; clc;
 
 %--------------------------------------------------------------------------
-% Path to required directories
-dir_root_h   = '/pth/to/dir/on/holly';                 % The folder on holly where logs, scripts and data will be stored
-dir_root_l   = '/pth/to/above/dir/mapped/to/local';    % The location on the local machine to which dir_root_h is mapped (OBS: could have the same name as dir_root_h)
+% Read path to required directories from .txt file
+% The file should contain, on each new line;
+% dir_root_h - The folder on holly where logs, scripts and data will be stored
+% dir_root_l - The location on the local machine to which dir_root_h is mapped (OBS: could have the same name as dir_root_h)
+% dir_pwd_h  - The location of this code on holle (remember, now you are on your local machine)
+[dir_root_h,dir_root_l,dir_pwd_h] = read_directory_details('directory_details.txt');
+
 dir_matlab_h = '/share/apps/MATLAB/R2016a/bin/matlab'; % The path to MATLAB on holly
-dir_pwd_h    = '/pth/to/this/file/on/holly';           % The location of this code on holle (remember, now you are on your local machine)
+
+%--------------------------------------------------------------------------
+% Read Holly username and password from .txt file
+% The file should contain username and password on separate lines
+[username,password] = read_user_details('user_details.txt');
 
 %--------------------------------------------------------------------------
 % Cluster parameters
-RAM      = 2;          % RAM to allocate for each job (if this value is to small, expect hard to trace runtime errors...)
-username = 'username'; % your holly username
-password = 'password'; % your holly password (TODO: should probably be read from file, not harcoded...)
-t        = 10;         % Number of jobs to run on holly 
+RAM = 2;  % RAM to allocate for each job (if this value is to small, expect hard to trace runtime errors...)
+t   = 10; % Number of jobs to run on holly 
 
 %--------------------------------------------------------------------------
 % Path to directories on local
@@ -114,7 +120,8 @@ for iter=1:10
     cmd             = ['sshpass -p "' password '" ssh -o StrictHostKeyChecking=no ' username '@holly "source /etc/profile;/opt/gridengine/bin/linux-x64/qsub -l vf=' num2str(RAM) 'G -l h_vmem=' num2str(RAM) 'G ' pth_script_parfor '"'];        
     [status,result] = system(cmd);    
     if status
-       error('status~=0 for t jobs on holly!') 
+        fprintf([result '\n'])
+        error('status~=0 on Holly!') 
     end
     fprintf(result)
     
@@ -123,7 +130,8 @@ for iter=1:10
     cmd             = ['sshpass -p "' password '" ssh -o StrictHostKeyChecking=no ' username '@holly "source /etc/profile;/opt/gridengine/bin/linux-x64/qsub -l vf=0.1G -l h_vmem=0.1G -hold_jid ' jnam_h ' -cwd ' pth_script_dummy '"'];
     [status,result] = system(cmd);
     if status
-       error('status~=0 for dummy job on holly!') 
+        fprintf([result '\n'])
+        error('status~=0 for dummy job on Holly!') 
     end
     fprintf(result)
     
